@@ -33,7 +33,7 @@ class AccBalanceResolver {
   }
 
   async inferBalance() {
-    await this.getHRKAccBalance();
+    await this.getHrkAccBalance();
     await this.getForeignCurrencyAccBalance();
     const { hrkAccBalance, foreignCurrencyAccBalance } = this;
     if (!hrkAccBalance || !foreignCurrencyAccBalance) return;
@@ -62,7 +62,7 @@ class AccBalanceResolver {
     this.foreignCurrencyAccBalance = BigNumber(balance).times(exchangeRate).toNumber();
   }
 
-  async getHRKAccBalance() {
+  async getHrkAccBalance() {
     const xmlDoc = this.sgnFileResolver('rtf');
     if (!xmlDoc) return;
     const buffer = await extract(xmlDoc);
@@ -86,8 +86,8 @@ class AccBalanceResolver {
 
   getLatestForeignBalance(innerXmlDoc) {
     const { currencyStatement, newAccBalance } = ATTRS_DICTIONARY;
-    const arr = innerXmlDoc.findall('*/').find(it => it.tag === currencyStatement);
-    const balance = arr.findall('*/').find(it => it.tag === newAccBalance).text;
+    const el = innerXmlDoc.findall('*/').find(it => it.tag === currencyStatement);
+    const balance = el.findall('*/').find(it => it.tag === newAccBalance).text;
     return normalizeAmount(balance);
   }
 }
