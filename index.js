@@ -4,7 +4,6 @@ const { extract, parse, verify } = require('@extensionengine/pbzcomnet-signedfil
 const { format, unformat } = require('currency-formatter');
 const BigNumber = require('bignumber.js');
 const parseRTF = require('@extensionengine/rtf-parser');
-const Promise = require('bluebird');
 const { readFileSync } = require('fs');
 const request = require('simple-get');
 
@@ -34,8 +33,8 @@ class AccBalanceResolver {
   }
 
   async inferBalance() {
-    const METHODS = ['getHRKAccBalance', 'getForeignCurrencyAccBalance'];
-    await Promise.each(METHODS, method => this[method]());
+    await this.getHRKAccBalance();
+    await this.getForeignCurrencyAccBalance();
     const { hrkAccBalance, foreignCurrencyAccBalance } = this;
     if (!hrkAccBalance || !foreignCurrencyAccBalance) return;
     const total = BigNumber(hrkAccBalance).plus(foreignCurrencyAccBalance).toNumber();
