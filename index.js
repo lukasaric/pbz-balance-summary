@@ -20,7 +20,8 @@ const FILE_PATHS = {
 const ATTRS_DICTIONARY = {
   currencyStatement: 'valuta_izvod',
   newAccBalance: 'novo_stanje',
-  middleExchange: 'srednji_tecaj'
+  middleExchange: 'srednji_tecaj',
+  currency: 'valuta'
 };
 
 const EXCHANGE_RATE_URL = 'http://api.hnb.hr/tecajn/v2?valuta=EUR&valuta=USD';
@@ -45,9 +46,8 @@ class BalanceResolver {
     return new Promise((resolve, reject) => {
       return request.concat(opts, (err, _res, data) => {
         if (err) reject(err);
-        const { middleExchange } = ATTRS_DICTIONARY;
-        const exchangeRate = data.find(it => it.valuta === 'USD')[middleExchange];
-        resolve(normalizeAmount(exchangeRate));
+        const { currency, middleExchange } = ATTRS_DICTIONARY;
+        resolve(data.find(it => it[currency] === 'USD')[middleExchange]);
       });
     });
   }
@@ -55,14 +55,11 @@ class BalanceResolver {
   async getForeignCurrencyAccBalance() {
     const xmlDoc = this.sgnFileResolver('xml');
     if (!xmlDoc) return;
-    const { currencyStatement, newAccBalance } = ATTRS_DICTIONARY;
     const buffer = await extract(xmlDoc);
     const innerXmlDoc = parse(buffer.toString());
-    const arr = innerXmlDoc.findall('*/').find(it => it.tag === currencyStatement);
-    const balance = arr.findall('*/').find(it => it.tag === newAccBalance).text;
-    const exchangeRate = await this.getExchangeRate();
-    this.foreignCurrencyAccBalance =
-      BigNumber(normalizeAmount(balance)).times(exchangeRate).toNumber();
+    const balance = this.getLatestForeignBalance(innerXmlDoc);
+    const exchangeRate = normalizeAmount(await this.getExchangeRate());
+    this.foreignCurrencyAccBalance = BigNumber(balance).times(exchangeRate).toNumber();
   }
 
   async getHRKAccBalance() {
@@ -85,6 +82,13 @@ class BalanceResolver {
     });
     const span = rftObj.content[0].value;
     return normalizeAmount(span.split(':').pop());
+  }
+
+  getLatestForeignBalance(innerXmlDoc) {
+    const { currencyStatement, newAccBalance } = ATTRS_DICTIONARY;
+    const arr = innerXmlDoc.findall('*/').find(it => it.tag === currencyStatement);
+    const balance = arr.findall('*/').find(it => it.tag === newAccBalance).text;
+    return normalizeAmount(balance);
   }
 }
 
