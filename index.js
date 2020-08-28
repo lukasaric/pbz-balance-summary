@@ -12,7 +12,7 @@ BigNumber.set({ DECIMAL_PLACES: 2 });
 
 const normalizeAmount = amount => unformat(amount, { locale: 'hr_HR' });
 
-const FILE_PATHS = {
+const REPORTS = {
   rtf: process.env.RTF_REPORT,
   xml: process.env.XML_REPORT
 };
@@ -26,8 +26,9 @@ const ATTRS_DICTIONARY = {
 
 const EXCHANGE_RATE_URL = 'http://api.hnb.hr/tecajn/v2?valuta=EUR&valuta=USD';
 
-class BalanceResolver {
-  constructor() {
+class AccBalanceResolver {
+  constructor(reports = null) {
+    this.reports = reports || REPORTS;
     this.hrkAccBalance = null;
     this.foreignCurrencyAccBalance = null;
   }
@@ -71,7 +72,7 @@ class BalanceResolver {
   }
 
   sgnFileResolver(format) {
-    const xml = readFileSync(FILE_PATHS[format], 'utf-8');
+    const xml = readFileSync(this.reports[format], 'utf-8');
     const xmlDoc = parse(xml);
     return verify(xmlDoc) ? xmlDoc : null;
   }
@@ -92,6 +93,6 @@ class BalanceResolver {
   }
 }
 
-new BalanceResolver().inferBalance().then(amount => console.log(amount));
+new AccBalanceResolver().inferBalance().then(amount => console.log(amount));
 
-module.exports = new BalanceResolver().inferBalance();
+module.exports = new AccBalanceResolver().inferBalance();
