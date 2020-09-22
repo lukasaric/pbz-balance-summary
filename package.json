@@ -16,6 +16,7 @@
     "bignumber.js": "^9.0.0",
     "currency-formatter": "^1.5.6",
     "dotenv": "^8.2.0",
+    "emailjs": "^3.3.0",
     "mailparser": "^3.0.0",
     "simple-get": "^4.0.0"
   },
