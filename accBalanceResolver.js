@@ -16,7 +16,7 @@ const REPORTS = {
   xml: process.env.XML_REPORT
 };
 
-const ATTRS_DICTIONARY = {
+const LOCALIZED_ATTRS = {
   currencyStatement: 'valuta_izvod',
   newAccBalance: 'novo_stanje',
   middleExchange: 'srednji_tecaj',
@@ -46,7 +46,7 @@ class AccBalanceResolver {
     return new Promise((resolve, reject) => {
       return request.concat(opts, (err, _res, data) => {
         if (err) reject(err);
-        const { currency, middleExchange } = ATTRS_DICTIONARY;
+        const { currency, middleExchange } = LOCALIZED_ATTRS;
         resolve(data.find(it => it[currency] === 'USD')[middleExchange]);
       });
     });
@@ -85,13 +85,11 @@ class AccBalanceResolver {
   }
 
   getLatestForeignBalance(innerXmlDoc) {
-    const { currencyStatement, newAccBalance } = ATTRS_DICTIONARY;
+    const { currencyStatement, newAccBalance } = LOCALIZED_ATTRS;
     const el = innerXmlDoc.findall('*/').find(it => it.tag === currencyStatement);
     const balance = el.findall('*/').find(it => it.tag === newAccBalance).text;
     return normalizeAmount(balance);
   }
 }
 
-new AccBalanceResolver().inferBalance().then(amount => console.log(amount));
-
-module.exports = new AccBalanceResolver().inferBalance();
+module.exports = AccBalanceResolver;
