@@ -1,5 +1,6 @@
 # deps
 node_modules
+jspm_packages
 
 # logs
 logs
@@ -19,3 +20,6 @@ npm-debug.log*
 
 # PBZCOM@NET balance reports
 reports
+
+# Serverless directories
+.serverless

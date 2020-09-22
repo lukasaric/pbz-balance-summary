@@ -1,20 +1,22 @@
 {
-  "name": "pbz-balance-inferer",
+  "name": "pbz-reports-service",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node -r dotenv/config ./index",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node -r dotenv/config ./handler",
+    "invoke:seed": "serverless invoke local --function resolveAccBalance --path seed/SNSEventMock.json"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@extensionengine/pbzcomnet-signedfile": "^1.0.2",
     "@extensionengine/rtf-parser": "^1.0.0",
+    "aws-sdk": "^2.741.0",
     "bignumber.js": "^9.0.0",
     "currency-formatter": "^1.5.6",
     "dotenv": "^8.2.0",
+    "mailparser": "^3.0.0",
     "simple-get": "^4.0.0"
   },
   "devDependencies": {
@@ -30,6 +32,7 @@
     "eslint-plugin-require-sort": "^1.2.2",
     "eslint-plugin-sort-imports-es6-autofix": "^0.5.0",
     "eslint-plugin-standard": "^4.0.1",
-    "eslint-plugin-vue": "^6.2.2"
+    "eslint-plugin-vue": "^6.2.2",
+    "serverless-dotenv-plugin": "^3.0.0"
   }
 }

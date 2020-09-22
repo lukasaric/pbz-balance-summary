@@ -1,97 +1,38 @@
 'use strict';
 
-const { extract, parse, verify } = require('@extensionengine/pbzcomnet-signedfile');
-const { format, unformat } = require('currency-formatter');
-const BigNumber = require('bignumber.js');
-const parseRTF = require('@extensionengine/rtf-parser');
-const { readFileSync } = require('fs');
-const request = require('simple-get');
+const config = require('./config');
+const S3 = require('aws-sdk/clients/s3');
 
-BigNumber.set({ DECIMAL_PLACES: 2 });
+const API_VERSION = '2006-03-01';
 
-const normalizeAmount = amount => unformat(amount, { locale: 'hr_HR' });
+const s3 = new S3({
+  signatureVersion: 'v4',
+  accessKeyId: config.key,
+  secretAccessKey: config.secret,
+  region: config.region,
+  apiVersion: API_VERSION
+});
 
-const REPORTS = {
-  rtf: process.env.RTF_REPORT,
-  xml: process.env.XML_REPORT
+exports.handler = function (event, context, callback) {
+  console.log('Process email');
+
+  const sesNotification = event.Records[0].ses;
+  console.log('SES Notification:\n', JSON.stringify(sesNotification, null, 2));
+
+  // Retrieve the email from your bucket
+  s3.getObject({
+    Bucket: config.bucket,
+    Key: sesNotification.mail.messageId
+  }, function (err, data) {
+    if (err) {
+      console.log(err, err.stack);
+      callback(err);
+    } else {
+      console.log('Raw email:\n' + data.Body);
+
+      // Custom email processing goes here
+
+      callback(null, null);
+    }
+  });
 };
-
-const ATTRS_DICTIONARY = {
-  currencyStatement: 'valuta_izvod',
-  newAccBalance: 'novo_stanje',
-  middleExchange: 'srednji_tecaj',
-  currency: 'valuta'
-};
-
-const EXCHANGE_RATE_URL = 'http://api.hnb.hr/tecajn/v2?valuta=EUR&valuta=USD';
-
-class AccBalanceResolver {
-  constructor(reports = null) {
-    this.reports = reports || REPORTS;
-    this.hrkAccBalance = null;
-    this.foreignCurrencyAccBalance = null;
-  }
-
-  async inferBalance() {
-    await this.getHrkAccBalance();
-    await this.getForeignCurrencyAccBalance();
-    const { hrkAccBalance, foreignCurrencyAccBalance } = this;
-    if (!hrkAccBalance || !foreignCurrencyAccBalance) return;
-    const total = BigNumber(hrkAccBalance).plus(foreignCurrencyAccBalance).toNumber();
-    return `${format(total, { currency: 'HRK' })} HRK`;
-  }
-
-  getExchangeRate() {
-    const opts = { url: EXCHANGE_RATE_URL, json: true };
-    return new Promise((resolve, reject) => {
-      return request.concat(opts, (err, _res, data) => {
-        if (err) reject(err);
-        const { currency, middleExchange } = ATTRS_DICTIONARY;
-        resolve(data.find(it => it[currency] === 'USD')[middleExchange]);
-      });
-    });
-  }
-
-  async getForeignCurrencyAccBalance() {
-    const xmlDoc = this.sgnFileResolver('xml');
-    if (!xmlDoc) return;
-    const buffer = await extract(xmlDoc);
-    const innerXmlDoc = parse(buffer.toString());
-    const balance = this.getLatestForeignBalance(innerXmlDoc);
-    const exchangeRate = normalizeAmount(await this.getExchangeRate());
-    this.foreignCurrencyAccBalance = BigNumber(balance).times(exchangeRate).toNumber();
-  }
-
-  async getHrkAccBalance() {
-    const xmlDoc = this.sgnFileResolver('rtf');
-    if (!xmlDoc) return;
-    const buffer = await extract(xmlDoc);
-    const rtfDoc = await parseRTF(buffer);
-    this.hrkAccBalance = this.getLatestHrkBalance(rtfDoc);
-  }
-
-  sgnFileResolver(format) {
-    const xml = readFileSync(this.reports[format], 'utf-8');
-    const xmlDoc = parse(xml);
-    return verify(xmlDoc) ? xmlDoc : null;
-  }
-
-  getLatestHrkBalance(rtfDoc) {
-    const rftObj = rtfDoc.content.find(paragraph => {
-      return paragraph.content.find(span => span.value.includes('Novo stanje:'));
-    });
-    const span = rftObj.content[0].value;
-    return normalizeAmount(span.split(':').pop());
-  }
-
-  getLatestForeignBalance(innerXmlDoc) {
-    const { currencyStatement, newAccBalance } = ATTRS_DICTIONARY;
-    const el = innerXmlDoc.findall('*/').find(it => it.tag === currencyStatement);
-    const balance = el.findall('*/').find(it => it.tag === newAccBalance).text;
-    return normalizeAmount(balance);
-  }
-}
-
-new AccBalanceResolver().inferBalance().then(amount => console.log(amount));
-
-module.exports = new AccBalanceResolver().inferBalance();
