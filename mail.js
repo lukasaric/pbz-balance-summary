@@ -6,13 +6,7 @@ const { SMTPClient } = require('emailjs');
 const from = `${config.sender.name} <${config.sender.address}>`;
 const recipient = '<lsaric@extensionengine.com>';
 
-const client = new SMTPClient({
-  user: config.user,
-  password: config.password,
-  host: config.host,
-  ssl: config.ssl,
-  tls: config.tls
-});
+const client = new SMTPClient(config);
 
 module.exports.forwardReport = accBalance => {
   const text = `Account balance total: ${accBalance}`;
