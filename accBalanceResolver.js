@@ -13,11 +13,6 @@ const normalizeAmount = amount => unformat(amount, { locale: 'hr_HR' });
 
 const isBuffer = arg => Buffer.isBuffer(arg);
 
-const REPORTS = {
-  rtf: process.env.RTF_REPORT,
-  xml: process.env.XML_REPORT
-};
-
 const LOCALIZED_ATTRS = {
   currencyStatement: 'valuta_izvod',
   newAccBalance: 'novo_stanje',
@@ -28,8 +23,8 @@ const LOCALIZED_ATTRS = {
 const EXCHANGE_RATE_URL = 'http://api.hnb.hr/tecajn/v2?valuta=EUR&valuta=USD';
 
 class AccBalanceResolver {
-  constructor(reports = null) {
-    this.reports = reports || REPORTS;
+  constructor(reports = {}) {
+    this.reports = reports;
     this.hrkAccBalance = null;
     this.foreignCurrencyAccBalance = null;
   }

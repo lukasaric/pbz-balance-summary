@@ -18,8 +18,5 @@ npm-debug.log*
 # Configuration
 .env
 
-# PBZCOM@NET balance reports
-reports
-
 # Serverless directories
 .serverless
