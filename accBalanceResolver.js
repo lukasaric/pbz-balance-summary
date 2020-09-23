@@ -11,6 +11,8 @@ BigNumber.set({ DECIMAL_PLACES: 2 });
 
 const normalizeAmount = amount => unformat(amount, { locale: 'hr_HR' });
 
+const isBuffer = arg => Buffer.isBuffer(arg);
+
 const REPORTS = {
   rtf: process.env.RTF_REPORT,
   xml: process.env.XML_REPORT
@@ -71,7 +73,8 @@ class AccBalanceResolver {
   }
 
   sgnFileResolver(format) {
-    const xml = readFileSync(this.reports[format], 'utf-8');
+    const report = this.reports[format];
+    const xml = isBuffer(report) ? report.toString() : readFileSync(report, 'utf-8');
     const xmlDoc = parse(xml);
     return verify(xmlDoc) ? xmlDoc : null;
   }

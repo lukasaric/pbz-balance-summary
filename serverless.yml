@@ -24,6 +24,7 @@ plugins:
 
 provider:
   name: aws
+  region: us-east-1
   runtime: nodejs12.x
 
 # you can overwrite defaults here
@@ -58,6 +59,9 @@ provider:
 functions:
   resolveAccBalance:
     handler: handler.resolveAccBalance
+    events:
+      - sns:
+          arn: arn:aws:sns:us-east-1:715075359986:pbz_reports
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

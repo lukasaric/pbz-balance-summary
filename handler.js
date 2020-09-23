@@ -15,6 +15,9 @@ module.exports.resolveAccBalance = async event => {
 
 function adjustAttachments({ attachments }) {
   if (!attachments.length) return;
-  // TODO: format attachments
-  return { rtf: '', xml: '' };
+  return attachments.reduce((acc, { content, filename }) => {
+    const ext = filename.includes('.xml') ? 'xml' : 'rtf';
+    acc[ext] = content;
+    return acc;
+  }, {});
 }
