@@ -1,7 +1,7 @@
 'use strict';
 
 const { extract, parse, verify } = require('@extensionengine/pbzcomnet-signedfile');
-const { format, unformat } = require('currency-formatter');
+const { formatAmount, isBuffer, normalizeAmount } = require('./utils');
 const BigNumber = require('bignumber.js');
 const parseRTF = require('@extensionengine/rtf-parser');
 const { readFileSync } = require('fs');
@@ -9,13 +9,9 @@ const request = require('simple-get');
 
 BigNumber.set({ DECIMAL_PLACES: 2 });
 
-const normalizeAmount = amount => unformat(amount, { locale: 'hr_HR' });
-const formatAmount = amount => `${format(amount, { currency: 'HRK' })} HRK`;
-const isBuffer = arg => Buffer.isBuffer(arg);
-
 const EXCHANGE_RATE_URL = 'http://api.hnb.hr/tecajn/v2?valuta=EUR&valuta=USD';
 
-const ERRORS = {
+const ERROR_MESSAGES = {
   noContent: 'The email does not contain any attached files/reports.',
   verification: 'File did not pass the signature verification.'
 };
@@ -35,11 +31,10 @@ class AccBalanceResolver {
   }
 
   async inferBalance() {
-    if (!this.reports) throw new Error(ERRORS.noContent);
+    if (!this.reports) throw new Error(ERROR_MESSAGES.noContent);
     await this.getHrkAccBalance();
     await this.getForeignCurrencyAccBalance();
     const { hrkAccBalance, foreignCurrencyAccBalance } = this;
-    console.log(hrkAccBalance, foreignCurrencyAccBalance);
     const total = BigNumber(hrkAccBalance).plus(foreignCurrencyAccBalance).toNumber();
     return {
       hrkAccBAmount: formatAmount(hrkAccBalance),
@@ -82,7 +77,7 @@ class AccBalanceResolver {
     if (!report) return;
     const xml = isBuffer(report) ? report.toString() : readFileSync(report, 'utf-8');
     const xmlDoc = parse(xml);
-    if (!verify(xmlDoc)) throw new Error(ERRORS.verification);
+    if (!verify(xmlDoc)) throw new Error(ERROR_MESSAGES.verification);
     return xmlDoc;
   }
 
