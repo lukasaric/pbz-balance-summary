@@ -15,13 +15,12 @@ const forwardReport = ({ hrkAccBAmount, foreignCurrencyAmount, total }) => {
     Account balance total: ${total}
   `;
   const message = { from, to: recipient, text, subject: 'Infered PBZ reports' };
-  return client.send(message, (err, message) => console.log(err || message));
+  return client.send(message);
 };
 
-const forwardError = errorMsg => {
-  const text = errorMsg;
-  const message = { from, to: recipient, text, subject: 'PBZ reports error' };
-  return client.send(message, (err, message) => console.log(err || message));
+const forwardError = error => {
+  const message = { from, to: recipient, text: error, subject: 'PBZ reports error' };
+  return client.send(message);
 };
 
 module.exports = { forwardReport, forwardError };
