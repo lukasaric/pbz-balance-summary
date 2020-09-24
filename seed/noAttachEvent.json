@@ -1,0 +1,120 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:123456789012:IncomingEmail:12345678",
+      "Sns": {
+          "Type": "Notification",
+          "MessageId": "EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000",
+          "TopicArn": "arn:aws:sns:us-east-1:123456789012:IncomingEmail",
+          "Subject": "Amazon SES Email Receipt Notification",
+          "Message": {
+            "notificationType": "Received",
+            "mail": {
+              "timestamp": "2019-09-06T18:52:14.965Z",
+              "source": "0100016d07eb7477-8e1938ce-475e-4e4b-89cb-example-000000@amazonses.com",
+              "messageId": "12345678901example",
+              "destination": ["recipient@example.com"],
+              "headersTruncated": false,
+              "headers": [{
+                "name": "Return-Path",
+                "value": "<0100016d07eb7477-8e1938ce-475e-4e4b-89cb-example-000000@amazonses.com>"
+              }, {
+                "name": "Received",
+                "value": "from a1-23.smtp-out.amazonses.com (a1-23.smtp-out.amazonses.com [203.0.113.0]) byinbound-smtp.us-east-1.amazonaws.com with SMTP id12345678901example for recipient@example.com; Fri, 06 Sep 201918:52:14 +0000 (UTC)"
+              }, {
+                "name": "X-SES-Spam-Verdict",
+                "value": "PASS"
+              }, {
+                "name": "X-SES-Virus-Verdict",
+                "value": "PASS"
+              }, {
+                "name": "Received-SPF",
+                "value": "pass (spfCheck: domain of amazonses.com designates 203.0.113.0 as permitted sender)client-ip=203.0.113.0; envelope-from=0100016d07eb7477-8e1938ce-475e-4e4b-89cb-example-000000@amazonses.com; helo=a1-23.smtp-out.amazonses.com;"
+              }, {
+                "name": "Authentication-Results",
+                "value": "amazonses.com; spf=pass (spfCheck: domain of amazonses.com designates 203.0.113.0as permitted sender) client-ip=203.0.113.0; envelope-from=0100016d07eb7477-8e1938ce-475e-4e4b-89cb-example-000000@amazonses.com; helo=a1-23.smtp-out.amazonses.com;dkim=pass header.i=@amazonses.com; dmarc=none header.from=example.com;"
+              }, {
+                "name": "X-SES-RECEIPT",
+                "value": "AEFBQUFBQUFBQUFFQkx0QUJZZENEXAMPLE="
+              }, {
+                "name": "X-SES-DKIM-SIGNATURE",
+                "value": "a=rsa-sha256; q=dns/txt; b=d5azwgA2iBqAjA4NBm1ARzjJ95raRmy4G84iVdd3x2JzSHeUnQuTuLmJAqRrYY3WpMIVRFy01hITaguCVjUPWBR0xF6fCEXH85cf3RNeFQyLfWZqoXKfBdjFRV+13troDterH2MxBUL8rjzcvdHetl0ImwlaK2PGmePTexample=; c=relaxed/simple; s=EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000; d=amazonses.com; t=1567795935; v=1; bh=CZ1SghsYaA6SSCbitzsLISeFoNlpdtH1Pyiexample=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"
+              }, {
+                "name": "DKIM-Signature",
+                "value": "v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple; s=EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000; d=amazonses.com; t=1567795934; h=From:To:Subject:MIME-Version:Content-Type:Message-ID:Date:Feedback-ID; bh=CZ1SghsYaA6SSCbitzsLISeFoNlpdtH1Pyiexample=; b=L6VXqR1PSN/FYqJI/VAfPRKFgtakcHCYJvuJqVYbuJT8I3FOhqOvkbcgHxOgswoxPfvGrL6S53H8Er5Do/CPvOM4Tx3ilE+a0GTYVLjKmwltNeN09YWlJAoqG5KMQPZUxRYaNvYPInLzUdGirdjkbSIgZEnrvq5MzaMWexample="
+              }, {
+                "name": "From",
+                "value": "sender@example.com"
+              }, {
+                "name": "To",
+                "value": "recipient@example.com"
+              }, {
+                "name": "Subject",
+                "value": "Amazon SES Test"
+              }, {
+                "name": "MIME-Version",
+                "value": "1.0"
+              }, {
+                "name": "Content-Type",
+                "value": "multipart/alternative;  boundary=\"----=_Part_869787_396523212.15677example\""
+              }, {
+                "name": "Message-ID",
+                "value": "<0100016d07eb7477-8e1938ce-475e-4e4b-89cb-example-000000@email.amazonses.com>"
+              }, {
+                "name": "Date",
+                "value": "Fri, 6 Sep 2019 18:52:14 +0000"
+              }, {
+                "name": "X-SES-Outgoing",
+                "value": "2019.09.06-203.0.113.0"
+              }, {
+                "name": "Feedback-ID",
+                "value": "1.us-east-1.ZitRoTk0xziun8WEJevt+cSJ17QNuCwulg2D2v3nrT0=:AmazonSES"
+              }],
+              "commonHeaders": {
+                "returnPath": "0100016d07eb7477-8e1938ce-475e-4e4b-89cb-example-000000@amazonses.com",
+                "from": ["sender@example.com"],
+                "date": "Fri, 6 Sep 2019 18:52:14 +0000",
+                "to": ["recipient@example.com"],
+                "messageId": "<0100016d07eb7477-8e1938ce-475e-4e4b-89cb-example-000000@email.amazonses.com>",
+                "subject": "Amazon SES Test"
+              }
+            },
+            "receipt": {
+              "timestamp": "2019-09-06T18:52:14.965Z",
+              "processingTimeMillis": 1098,
+              "recipients": ["recipient@example.com"],
+              "spamVerdict": {
+                "status": "PASS"
+              },
+              "virusVerdict": {
+                "status": "PASS"
+              },
+              "spfVerdict": {
+                "status": "PASS"
+              },
+              "dkimVerdict": {
+                "status": "GRAY"
+              },
+              "dmarcVerdict": {
+                "status": "GRAY"
+              },
+              "action": {
+                "type": "SNS",
+                "topicArn": "arn:aws:sns:us-east-1:123456789012:IncomingEmail",
+                "encoding": "BASE64"
+              }
+            },
+            "content": "Return-Path: <lsaric@extensionengine.com>\nReceived: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])\n by inbound-smtp.us-east-1.amazonaws.com with SMTP id rovc4tijrvk6k3s7nf2hvojejlu38174eokrn181\n for info@pbz.extnsn.com;\n Thu, 24 Sep 2020 08:12:13 +0000 (UTC)\nX-SES-Spam-Verdict: PASS\nX-SES-Virus-Verdict: PASS\nReceived-SPF: pass (spfCheck: domain of extensionengine.com designates 209.85.218.54 as permitted sender) client-ip=209.85.218.54; envelope-from=lsaric@extensionengine.com; helo=mail-ej1-f54.google.com;\nAuthentication-Results: amazonses.com;\n spf=pass (spfCheck: domain of extensionengine.com designates 209.85.218.54 as permitted sender) client-ip=209.85.218.54; envelope-from=lsaric@extensionengine.com; helo=mail-ej1-f54.google.com;\n dkim=pass header.i=@extensionengine.com;\n dmarc=pass header.from=extensionengine.com;\nX-SES-RECEIPT: AEFBQUFBQUFBQUFFSG4wcjhlc1QwR3ByQ1Z0cjJRelI5bkpNQ0M1eDQzOXhKSHZsdzBubnJ4SXBaR1BwaVZXTU9ENzdsVkE5eUJWU0RYQzJ3QWM5dllZSTVmZzQrSE0xRWVWNklEb3g1SVBMRnVRbUQvcGpSZFJQUDRXTjVXUlRLTzNsWGFZL3pUQUpvSS9BSDU4a2NqMXRZbm1JaEFpQUFDTVVUWVZzTFl4dzVkcGxacEY3ZDZSSGRuS0thM3VXc2d6YjdodWErVktCYit5Qk42NkJicTNjMldOVWRvZUEweXo2RjlKT2RPN1E4NnY0UjdTTnRnalN2cHBDNm1Nc3AvTHRaNTNWMG9nak4zVEJiVFBWWDBqSzdKbEFVN0FmbDgvQmV6eU9jbWNZZlRRczgwWDlHNmc9PQ==\nX-SES-DKIM-SIGNATURE: a=rsa-sha256; q=dns/txt; b=gh//k9Q6h0BHJ6hZSQThcaQMebs4QET7xWywsGPTg33aFsfXCQqi/bATYumh8ceZTTcVRxS9BMfwD/xgZmC0T0h7nlWAqcGSvWbST7O/EgdQVnsIT3sCT5Jm8cKs4Y0gWQQtwbPzYdAMc18EEE7WqRP8NOaBEgAziXdNjMEau4A=; c=relaxed/simple; s=224i4yxa5dv7c2xz3womw6peuasteono; d=amazonses.com; t=1600935134; v=1; bh=S3Pmm27BaLE1zFe0W/SqFjnOpKGxVvrWrExsBfOkrPQ=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;\nReceived: by mail-ej1-f54.google.com with SMTP id q13so3184766ejo.9\n        for <info@pbz.extnsn.com>; Thu, 24 Sep 2020 01:12:13 -0700 (PDT)\nDKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\n        d=extensionengine.com; s=google;\n        h=mime-version:from:date:message-id:subject:to;\n        bh=S3Pmm27BaLE1zFe0W/SqFjnOpKGxVvrWrExsBfOkrPQ=;\n        b=EpGkqHGjhbjySSIcLrMLfsX+3sR/2a8phPRXmfJnMyU2XA/y7rh+AkS2nP61TAgnOE\n         5FNGEwb3u63w4J6XQqSBR+MJDLIHIgQGe+eRu1ldkYj4+jtsUkqf64f/s0MW4E/UZ1iA\n         2ICWe0cv2QRz7eWy3EoF6fwXprvzqb6HVA8GjgGhLiPh0hI201AjHOPy/9wOlDMTJ22m\n         fhPRBu8+qLtgOtzILooFSHsQd02BN+9pb92M5i5U2K801DQ1WPi00Bq7QVYcBJ6oTO4z\n         jPhsx2nQDY0RP9oCrShrO/KK128rdepo2PvzjwQCB7j4xGZULRjPaNY6bBEa8XYn9dI5\n         J/8g==\nX-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\n        d=1e100.net; s=20161025;\n        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;\n        bh=S3Pmm27BaLE1zFe0W/SqFjnOpKGxVvrWrExsBfOkrPQ=;\n        b=OrMH1KXbGbU9+MIFaUDm+0/f096OR8GPuGmhRrtPWSix1cZFx8H9xYK4li1TVHjHHY\n         R+vPyA1vD4f8DwvFF2lOoqbpujue+CudampYa1cFcAEl5jhgMGxoRWuxmdVEmDHsQB5b\n         JLqPLH6xM97O9nJZIyfQXiDUE7KhK+q2HUmxFaZplEifae0xRAI7gDuK5RPvpc1ZMQP6\n         dmQ6Jn5W3GGbl07o/Zz+kOm3N1wJvsF0NgXPb5POjAlwtqdkp13w0H9hSjfrtX2j1GyO\n         Iv/oGNdYsybWeqGxvsnREWP3NQvFnZvaTYWCS3vpoNwOTQskFtOPSPhtu3vGZLqfsr/i\n         dEog==\nX-Gm-Message-State: AOAM533sdNqni/T+YT65Z8Ug7O1kgYw7T27ChKmMvMfBX5iB/wjx2EB8\n\tCwH/Cd8GduabcoxfsB+aVe15Bny5xEEv8xvBQ7kJfQT1TiWVw4jy\nX-Google-Smtp-Source: ABdhPJyU2jiVRZIXd7gsnKrrLYRZHYP4ckkyv5oUfodSU/dRUOn5hBawxphLpusP+sdrMtC/RSEMRYmtVLW/96d0gKo=\nX-Received: by 2002:a17:906:cc99:: with SMTP id oq25mr3485516ejb.292.1600935132200;\n Thu, 24 Sep 2020 01:12:12 -0700 (PDT)\nMIME-Version: 1.0\nFrom: \"Saric, Luka\" <lsaric@extensionengine.com>\nDate: Thu, 24 Sep 2020 10:12:01 +0200\nMessage-ID: <CALnn1TX4ofrzH9qqvP1oQWTwj3f=LgtHS07GO22qGu87FZOK2g@mail.gmail.com>\nSubject: NO_ATTACHMENTS\nTo: info@pbz.extnsn.com\nContent-Type: multipart/alternative; boundary=\"000000000000dd192005b00ac10c\"\n\n--000000000000dd192005b00ac10c\nContent-Type: text/plain; charset=\"UTF-8\"\n\nNO_ATTACHMENTS\n\n--000000000000dd192005b00ac10c\nContent-Type: text/html; charset=\"UTF-8\"\n\n<div dir=\"ltr\">NO_ATTACHMENTS</div>\n\n--000000000000dd192005b00ac10c--\n"
+          },
+          "Timestamp": "2019-09-06T18:52:16.076Z",
+          "SignatureVersion": "1",
+          "Signature": "012345678901example==",
+          "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-01234567890123456789012345678901.pem",
+          "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:0123456789012:IncomingEmail:0b863538-3f32-462e-9c89-8d8e0example",
+          "MessageAttributes": {}
+      }
+    }
+  ]
+}

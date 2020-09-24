@@ -10,8 +10,15 @@ const request = require('simple-get');
 BigNumber.set({ DECIMAL_PLACES: 2 });
 
 const normalizeAmount = amount => unformat(amount, { locale: 'hr_HR' });
-
+const formatAmount = amount => `${format(amount, { currency: 'HRK' })} HRK`;
 const isBuffer = arg => Buffer.isBuffer(arg);
+
+const EXCHANGE_RATE_URL = 'http://api.hnb.hr/tecajn/v2?valuta=EUR&valuta=USD';
+
+const ERRORS = {
+  noContent: 'The email does not contain any attached files/reports.',
+  verification: 'File did not pass the signature verification.'
+};
 
 const LOCALIZED_ATTRS = {
   currencyStatement: 'valuta_izvod',
@@ -20,22 +27,25 @@ const LOCALIZED_ATTRS = {
   currency: 'valuta'
 };
 
-const EXCHANGE_RATE_URL = 'http://api.hnb.hr/tecajn/v2?valuta=EUR&valuta=USD';
-
 class AccBalanceResolver {
-  constructor(reports = {}) {
+  constructor(reports = null) {
     this.reports = reports;
-    this.hrkAccBalance = null;
-    this.foreignCurrencyAccBalance = null;
+    this.hrkAccBalance = 0;
+    this.foreignCurrencyAccBalance = 0;
   }
 
   async inferBalance() {
+    if (!this.reports) throw new Error(ERRORS.noContent);
     await this.getHrkAccBalance();
     await this.getForeignCurrencyAccBalance();
     const { hrkAccBalance, foreignCurrencyAccBalance } = this;
-    if (!hrkAccBalance || !foreignCurrencyAccBalance) return;
+    console.log(hrkAccBalance, foreignCurrencyAccBalance);
     const total = BigNumber(hrkAccBalance).plus(foreignCurrencyAccBalance).toNumber();
-    return `${format(total, { currency: 'HRK' })} HRK`;
+    return {
+      hrkAccBAmount: formatAmount(hrkAccBalance),
+      foreignCurrencyAmount: formatAmount(foreignCurrencyAccBalance),
+      total: formatAmount(total)
+    };
   }
 
   getExchangeRate() {
@@ -69,9 +79,11 @@ class AccBalanceResolver {
 
   sgnFileResolver(format) {
     const report = this.reports[format];
+    if (!report) return;
     const xml = isBuffer(report) ? report.toString() : readFileSync(report, 'utf-8');
     const xmlDoc = parse(xml);
-    return verify(xmlDoc) ? xmlDoc : null;
+    if (!verify(xmlDoc)) throw new Error(ERRORS.verification);
+    return xmlDoc;
   }
 
   getLatestHrkBalance(rtfDoc) {
