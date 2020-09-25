@@ -9,8 +9,8 @@ module.exports.resolveAccBalance = async event => {
   const email = await simpleParser(encodedContent);
   const reports = adjustAttachments(email);
   return new AccBalanceResolver(reports).inferBalance()
-    .then(total => forwardReport(total))
-    .catch(err => forwardError(err));
+    .then(forwardReport)
+    .catch(forwardError);
 };
 
 function adjustAttachments({ attachments }) {
