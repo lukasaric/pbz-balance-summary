@@ -26,7 +26,11 @@ Check `engines` field in [`package.json`](package.json)
 
 ### Development
 
-- Invoke lambda function locally by running `npm run invoke:seed`
+- Create `seed` folder
+- Create `.json` files which are representing aws mocked events (mail receiving).
+  See examples (look for `SNS` event example) :point_right:
+    [events](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-action-lambda-event.html)
+- Invoke lambda function locally by running `npm run invoke:local <path>`
 
 ### Lambda deployment
 
