@@ -12,6 +12,7 @@ Check `engines` field in [`package.json`](package.json)
 ### Prerequisites
 
 - [Node.js & npm](https://nodejs.org/en/download/)
+- [Serverless](https://www.serverless.com/framework/docs/getting-started/)
 - Clone this repo
 
 ### Setup
