@@ -7,6 +7,7 @@ provider:
   name: aws
   region: us-east-1
   runtime: nodejs12.x
+  role: arn:aws:iam::715075359986:role/pbz-lambda
 
 functions:
   resolveAccBalance:
