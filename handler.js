@@ -4,7 +4,7 @@ const { forwardError, forwardReport } = require('./ses.service');
 const AccBalanceResolver = require('./accBalanceResolver');
 const config = require('./config');
 const { simpleParser } = require('mailparser');
-const storage = require('./storage');
+const storage = require('./s3.service');
 
 module.exports.resolveAccBalance = async event => {
   const mail = event.Records[0].ses.mail;
