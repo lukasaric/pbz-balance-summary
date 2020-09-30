@@ -1,6 +1,6 @@
 'use strict';
 
-const { forwardError, forwardReport } = require('./mail');
+const { forwardError, forwardReport } = require('./ses.service');
 const AccBalanceResolver = require('./accBalanceResolver');
 const config = require('./config');
 const { simpleParser } = require('mailparser');
