@@ -1,8 +1,8 @@
 'use strict';
 
-const { forwardError, forwardReport } = require('./ses.service');
 const AccBalanceResolver = require('./accBalanceResolver');
 const config = require('./config');
+const ses = require('./ses.service');
 const { simpleParser } = require('mailparser');
 const storage = require('./s3.service');
 
@@ -13,8 +13,8 @@ module.exports.resolveAccBalance = async event => {
   const email = await simpleParser(encodedContent);
   const reports = adjustAttachments(email);
   return new AccBalanceResolver(reports).inferBalance()
-    .then(forwardReport)
-    .catch(forwardError);
+    .then(summary => ses.forwardReport(summary))
+    .catch(err => ses.forwardError(err));
 };
 
 function adjustAttachments({ attachments }) {
