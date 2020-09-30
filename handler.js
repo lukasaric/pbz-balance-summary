@@ -8,7 +8,7 @@ const storage = require('./s3.service');
 
 module.exports.resolveAccBalance = async event => {
   const mail = event.Records[0].ses.mail;
-  if (mail.source !== config.email.recipientAddress) return;
+  if (!config.ses.allowedSources.some(it => it === mail.source)) return;
   const { Body: encodedContent } = await storage.getFile(mail);
   const email = await simpleParser(encodedContent);
   const reports = adjustAttachments(email);

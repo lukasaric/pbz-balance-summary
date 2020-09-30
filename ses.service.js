@@ -1,11 +1,11 @@
 'use strict';
 
-const config = require('./config');
+const { ses: config } = require('./config');
 const SES = require('aws-sdk/clients/ses');
 
 class SESService {
   constructor() {
-    this.ses = new SES({ region: config.amazonStorage.region });
+    this.ses = new SES({ region: config.region });
     this.summary = {};
     this.text = '';
     this.subject = '';
@@ -14,13 +14,13 @@ class SESService {
   get params() {
     return {
       Destination: {
-        ToAddresses: [config.email.recipientAddress]
+        ToAddresses: [config.recipientAddress]
       },
       Message: {
         Subject: { Data: this.subject },
         Body: { Text: { Data: this.text.toString() } }
       },
-      Source: config.email.sender.address
+      Source: config.sender.address
     };
   }
 
