@@ -2,10 +2,14 @@
 
 const { forwardError, forwardReport } = require('./mail');
 const AccBalanceResolver = require('./accBalanceResolver');
+const config = require('./config');
 const { simpleParser } = require('mailparser');
+const storage = require('./storage');
 
 module.exports.resolveAccBalance = async event => {
-  const encodedContent = event.Records[0].Sns.Message.content;
+  const mail = event.Records[0].ses.mail;
+  if (mail.source !== config.email.recipientAddress) return;
+  const { Body: encodedContent } = await storage.getFile(mail);
   const email = await simpleParser(encodedContent);
   const reports = adjustAttachments(email);
   return new AccBalanceResolver(reports).inferBalance()

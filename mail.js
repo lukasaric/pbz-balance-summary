@@ -4,7 +4,7 @@ const { email: config } = require('./config');
 const { SMTPClient } = require('emailjs');
 
 const from = `${config.sender.name} <${config.sender.address}>`;
-const recipient = '<lsaric@extensionengine.com>';
+const recipient = `<${config.recipientAddress}>`;
 
 const client = new SMTPClient(config);
 
