@@ -15,10 +15,7 @@ Check `engines` field in [`package.json`](package.json)
 - [Serverless](https://www.serverless.com/framework/docs/getting-started/)
 - Clone this repo
 
-### Setup
-
-
-## Repo
+## Repo setup
 
 - Run `npm install` in the repo directory
 - App is configured via environment variables contained in a file named `.env`.
@@ -29,13 +26,13 @@ Check `engines` field in [`package.json`](package.json)
 
 - SES [docs](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/Welcome.html)
 - SNS [docs](https://docs.aws.amazon.com/sns/latest/dg/welcome.html)
-- Lambda [docs] (https://docs.aws.amazon.com/lambda/index.html)
+- Lambda [docs](https://docs.aws.amazon.com/lambda/index.html)
 
 ### Prerequisites:
   - Verify domain & email
   - Create SNS topic & after lambda deployment, add SNS topic as lambda trigger.
   - Adjust configuration sets (set SNS topic for `delivery`)
-  - Create S3 bucket, and allow SES actions in bucket [policy](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-permissions.html)
+  - Create S3 bucket, and allow SES actions in bucket [policy](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-permissions.html) (Be sure to add `Get`, `Put`, `Delete` & `List` bucket actions)
   - Create `mail receiving rule sets`(First rule is `S3` bucket, second is `lambda`)
   - After lambda deployment, go to IAM console, create role with `AWSLambdaFullAccess` & `AmazonSESFullAccess` permissions
   - Important: Copy role `arn` to `serverless.yml` config!
