@@ -13,21 +13,30 @@ class Storage {
       region: config.region,
       apiVersion: API_VERSION
     });
-    this.messageId = null;
+    this.key = null;
+    this.keys = [];
   }
 
   get params() {
-    return { Bucket: config.bucket, Key: `reports/${this.messageId}` };
+    return { Bucket: config.bucket, Key: this.key };
   }
 
-  getFile({ messageId }) {
-    this.messageId = messageId;
+  getFile(key) {
+    this.key = key;
     return this.s3.getObject(this.params).promise();
   }
 
-  removeFile({ messageId }) {
-    this.messageId = messageId;
+  removeFile(key) {
+    this.key = key;
     return this.s3.deleteObject(this.params).promise();
+  }
+
+  async listFiles() {
+    const params = { Bucket: config.bucket, MaxKeys: 3, Prefix: 'reports/' };
+    const { Contents } = await this.s3.listObjectsV2(params).promise();
+    this.keys = Contents.map(it => it.Key).slice(1, 3);
+    if (this.keys.length < 2) return;
+    return Promise.all(this.keys.map(key => this.getFile(key)));
   }
 }
 
