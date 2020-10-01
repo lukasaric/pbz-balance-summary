@@ -28,15 +28,17 @@ class AccBalanceResolver {
     this.reports = reports;
     this.hrkAccBalance = 0;
     this.foreignCurrencyAccBalance = 0;
+    this.exchangeRate = 0;
   }
 
   async inferBalance() {
     if (!this.reports) throw new Error(ERROR_MESSAGES.noContent);
     await this.getHrkAccBalance();
     await this.getForeignCurrencyAccBalance();
-    const { hrkAccBalance, foreignCurrencyAccBalance } = this;
+    const { hrkAccBalance, foreignCurrencyAccBalance, exchangeRate } = this;
     const total = BigNumber(hrkAccBalance).plus(foreignCurrencyAccBalance).toNumber();
     return {
+      exchangeRate,
       hrkAccBAmount: formatAmount(hrkAccBalance),
       foreignCurrencyAmount: formatAmount(foreignCurrencyAccBalance),
       total: formatAmount(total)
@@ -49,7 +51,8 @@ class AccBalanceResolver {
       return request.concat(opts, (err, _res, data) => {
         if (err) reject(err);
         const { currency, middleExchange } = LOCALIZED_ATTRS;
-        resolve(data.find(it => it[currency] === 'USD')[middleExchange]);
+        const foreignCurrency = data.find(it => it[currency] === 'USD');
+        resolve(normalizeAmount(foreignCurrency[middleExchange]));
       });
     });
   }
@@ -59,9 +62,9 @@ class AccBalanceResolver {
     if (!xmlDoc) return;
     const buffer = await extract(xmlDoc);
     const innerXmlDoc = parse(buffer.toString());
-    const balance = this.getLatestForeignBalance(innerXmlDoc);
-    const exchangeRate = normalizeAmount(await this.getExchangeRate());
-    this.foreignCurrencyAccBalance = BigNumber(balance).times(exchangeRate).toNumber();
+    const balance = BigNumber(this.getLatestForeignBalance(innerXmlDoc));
+    this.exchangeRate = await this.getExchangeRate();
+    this.foreignCurrencyAccBalance = balance.times(this.exchangeRate).toNumber();
   }
 
   async getHrkAccBalance() {
