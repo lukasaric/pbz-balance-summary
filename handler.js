@@ -1,6 +1,6 @@
 'use strict';
 
-const { adjustAttachments, isAllowedSource } = require('./utils');
+const { getOldestState, isAllowedSource, processAttachments } = require('./utils');
 const AccBalanceResolver = require('./accBalanceResolver');
 const ses = require('./ses.service');
 const { simpleParser } = require('mailparser');
@@ -13,11 +13,12 @@ module.exports.resolveAccBalance = async event => {
   if (!encodedContents) return;
   const emails = await Promise.all(encodedContents.map(it => simpleParser(it.Body)));
   const attachments = emails.flatMap(it => it.attachments);
-  const reports = adjustAttachments(attachments);
+  const reports = processAttachments(attachments);
+  if (Object.keys(reports).length < 2) return storage.removeFile(getOldestState(storage));
   return new AccBalanceResolver(reports).inferBalance()
     .then(async summary => {
       await ses.forwardReport(summary);
-      return Promise.all(storage.keys.map(key => storage.removeFile(key)));
+      return Promise.all(storage.keys.map(({ key }) => storage.removeFile(key)));
     })
     .catch(err => ses.forwardError(err));
 };

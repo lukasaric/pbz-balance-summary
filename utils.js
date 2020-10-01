@@ -11,8 +11,7 @@ const isBuffer = arg => Buffer.isBuffer(arg);
 
 const isAllowedSource = ({ source }) => ses.allowedSources.some(it => it === source);
 
-function adjustAttachments(attachments) {
-  if (!attachments.length) return;
+function processAttachments(attachments) {
   return attachments.reduce((acc, { content, filename }) => {
     const ext = filename.includes('.xml') ? 'xml' : 'rtf';
     acc[ext] = content;
@@ -20,10 +19,16 @@ function adjustAttachments(attachments) {
   }, {});
 }
 
+function getOldestState({ keys }) {
+  const oldest = new Date(Math.min(...keys.map(it => new Date(it.date))));
+  return keys.find(it => it.date.toISOString() === oldest.toISOString()).key;
+}
+
 module.exports = {
   normalizeAmount,
   formatAmount,
   isBuffer,
   isAllowedSource,
-  adjustAttachments
+  processAttachments,
+  getOldestState
 };
