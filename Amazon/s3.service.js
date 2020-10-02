@@ -1,6 +1,6 @@
 'use strict';
 
-const { s3: config } = require('./config');
+const { s3: config } = require('../config');
 const S3 = require('aws-sdk/clients/s3');
 
 const API_VERSION = '2012-10-17';

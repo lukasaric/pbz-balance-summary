@@ -1,10 +1,9 @@
 'use strict';
 
 const { isAllowedSource, isEmpty } = require('./utils');
+const { ses, storage } = require('./amazon');
 const AccBalanceResolver = require('./accBalanceResolver');
 const AttachmentsResolver = require('./attachmentsResolver');
-const ses = require('./ses.service');
-const storage = require('./s3.service');
 
 module.exports.resolveAccBalance = async event => {
   const mail = event.Records[0].ses.mail;

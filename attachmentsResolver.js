@@ -1,7 +1,7 @@
 'use strict';
 
 const { simpleParser } = require('mailparser');
-const storage = require('./s3.service');
+const { storage } = require('./amazon');
 
 class AttachmentsResolver {
   constructor(files) {

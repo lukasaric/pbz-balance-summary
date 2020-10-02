@@ -1,6 +1,6 @@
 'use strict';
 
-const { ses: config } = require('./config');
+const { ses: config } = require('../config');
 const SES = require('aws-sdk/clients/ses');
 
 class SESService {
