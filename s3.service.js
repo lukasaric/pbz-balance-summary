@@ -2,6 +2,7 @@
 
 const { s3: config } = require('./config');
 const S3 = require('aws-sdk/clients/s3');
+const { simpleParser } = require('mailparser');
 
 const API_VERSION = '2012-10-17';
 class Storage {
@@ -14,7 +15,6 @@ class Storage {
       apiVersion: API_VERSION
     });
     this.key = null;
-    this.keys = [];
   }
 
   get params() {
@@ -32,11 +32,13 @@ class Storage {
   }
 
   async listFiles() {
-    const params = { Bucket: config.bucket, MaxKeys: 3, Prefix: 'reports/' };
+    const params = { Bucket: config.bucket, MaxKeys: 4, Prefix: 'reports/' };
     const { Contents } = await this.s3.listObjectsV2(params).promise();
-    this.keys = Contents.map(it => ({ date: it.LastModified, key: it.Key })).slice(1, 3);
-    if (this.keys.length < 2) return;
-    return Promise.all(this.keys.map(({ key }) => this.getFile(key)));
+    const objects = await Promise.all(Contents.map(({ Key }) => this.getFile(Key)));
+    const emails = await Promise.all(objects.map(it => simpleParser(it.Body)));
+    return Contents.map((it, index) => ({
+      date: it.LastModified, key: it.Key, email: emails[index]
+    })).slice(1, 4);
   }
 }
 

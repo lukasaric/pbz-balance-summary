@@ -2,6 +2,7 @@
 
 const { format, unformat } = require('currency-formatter');
 const { ses } = require('./config');
+const storage = require('./s3.service');
 
 const normalizeAmount = amount => unformat(amount, { locale: 'hr_HR' });
 
@@ -19,9 +20,20 @@ function processAttachments(attachments) {
   }, {});
 }
 
-function getOldestState({ keys }) {
-  const oldest = new Date(Math.min(...keys.map(it => new Date(it.date))));
-  return keys.find(it => it.date.toISOString() === oldest.toISOString()).key;
+function getObjectByDate(items, action) {
+  const date = new Date(Math[action](...items.map(it => new Date(it.date))));
+  return items.find(it => it.date.toISOString() === date.toISOString());
+}
+
+async function processSameFormatFiles(files) {
+  const adjustedFiles = files.map(it => ({
+    ...it, attachments: processAttachments(it.email.attachments)
+  }));
+  const latest = getObjectByDate(adjustedFiles, 'max').attachments;
+  const sameFormatItems = adjustedFiles.filter(it => it.attachments[Object.keys(latest)[0]]);
+  const oldest = getObjectByDate(sameFormatItems, 'min').key;
+  await storage.removeFile(oldest);
+  return adjustedFiles.filter(it => it.key !== oldest);
 }
 
 module.exports = {
@@ -30,5 +42,6 @@ module.exports = {
   isBuffer,
   isAllowedSource,
   processAttachments,
-  getOldestState
+  getObjectByDate,
+  processSameFormatFiles
 };

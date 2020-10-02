@@ -36,7 +36,7 @@ class SESService {
   forwardReport(summary) {
     Object.assign(this, { subject: 'PBZ reports summary', summary });
     this.text = this.formattedReport;
-    return this.ses.sendEmail(this.params).promise();
+    return this.ses.sendEmail(this.params).promise().catch(this.forwardError);
   }
 
   forwardError(error) {
