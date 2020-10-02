@@ -56,7 +56,7 @@ Check `engines` field in [`package.json`](package.json)
       "ses": {
         "mail": {
            "timestamp": "2020-09-30T06:13:48.251Z",
-           "source": "<source_email_address>",
+           "source": "<allowed_source_email_address>",
            "messageId": "<incoming_message_id>",
            "headersTruncated": false
         },
