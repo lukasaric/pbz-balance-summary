@@ -27,10 +27,10 @@ class SESService {
   get formattedReport() {
     const { exchangeRate, hrkAccBAmount, foreignCurrencyAmount, total } = this.summary;
     return `
-    Croatian account balance: ${hrkAccBAmount}\n
-    Foreign currency account balance (converted to HRK): ${foreignCurrencyAmount}\n
-    Exchange rate: ${exchangeRate}\n
-    Account balance total: ${total}`;
+      Croatian account balance: ${hrkAccBAmount}\n
+      Foreign currency account balance (converted to HRK): ${foreignCurrencyAmount}\n
+      Exchange rate: ${exchangeRate}\n
+      Account balance total: ${total}`;
   }
 
   forwardReport(summary) {
