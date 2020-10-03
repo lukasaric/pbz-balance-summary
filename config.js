@@ -5,7 +5,8 @@ module.exports = {
     key: process.env.STORAGE_KEY,
     secret: process.env.STORAGE_SECRET,
     region: process.env.REGION,
-    bucket: process.env.STORAGE_BUCKET
+    bucket: process.env.STORAGE_BUCKET,
+    prefix: process.env.STORAGE_PREFIX
   },
   ses: {
     sender: {

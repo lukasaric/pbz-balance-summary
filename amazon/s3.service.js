@@ -31,7 +31,7 @@ class Storage {
   }
 
   async listFiles() {
-    const params = { Bucket: config.bucket, MaxKeys: 4, Prefix: 'reports/' };
+    const params = { Bucket: config.bucket, MaxKeys: 4, Prefix: config.prefix };
     const { Contents } = await this.s3.listObjectsV2(params).promise();
     const objects = await Promise.all(Contents.map(({ Key }) => this.getFile(Key)));
     return Contents.map((it, index) => ({
