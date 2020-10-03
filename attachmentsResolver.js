@@ -29,14 +29,15 @@ class AttachmentsResolver {
     this.files = this.files.map((it, index) => ({
       ...it,
       email: emails[index],
-      attachments: this.processAttachments(emails[index].attachments)
+      attachments: this.processAttachments(emails[index].attachments),
+      attachmentsCount: emails[index].attachments.length
     }));
   }
 
   attachmentsCheck() {
     const { files, incomingKey } = this;
     const latest = files.find(it => it.key === incomingKey);
-    return !count(latest.attachments) || count(latest.attachments) > 1;
+    return !latest.attachmentsCount || latest.attachmentsCount > 1;
   }
 
   async processSameFormatFiles() {
