@@ -11,10 +11,15 @@ class AttachmentsResolver {
     this.incomingKey = `${config.prefix}${incomingKey}`;
   }
 
+  get hasOneAttachment() {
+    const { files, incomingKey } = this;
+    return files.find(it => it.key === incomingKey).attachmentsCount === 1;
+  }
+
   async getAttachments() {
     await this.adjustFiles();
-    const { files, incomingKey } = this;
-    if (this.attachmentsCheck()) return storage.removeFile(incomingKey);
+    const { files, incomingKey, hasOneAttachment } = this;
+    if (!hasOneAttachment) return storage.removeFile(incomingKey);
     if (files.length < 2) return;
     if (files.length > 2) await this.processSameFormatFiles();
     const attachments = this.files.flatMap(it => it.email.attachments);
@@ -32,12 +37,6 @@ class AttachmentsResolver {
       attachments: this.processAttachments(emails[index].attachments),
       attachmentsCount: emails[index].attachments.length
     }));
-  }
-
-  attachmentsCheck() {
-    const { files, incomingKey } = this;
-    const latest = files.find(it => it.key === incomingKey);
-    return !latest.attachmentsCount || latest.attachmentsCount > 1;
   }
 
   async processSameFormatFiles() {
