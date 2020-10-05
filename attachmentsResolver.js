@@ -17,7 +17,7 @@ class AttachmentsResolver {
   }
 
   async getAttachments() {
-    await this.adjustFiles();
+    await this.filesAdjustment();
     const { files, incomingKey, hasOneAttachment } = this;
     if (!hasOneAttachment) return storage.removeFile(incomingKey);
     if (files.length < 2) return;
@@ -25,11 +25,11 @@ class AttachmentsResolver {
     const attachments = this.files.flatMap(it => it.email.attachments);
     const reports = this.processAttachments(attachments);
     return count(reports) < 2
-      ? storage.removeFile(this.getObjectByDate(files, 'min').key)
+      ? storage.removeFile(this.getFileByDate(files, 'min').key)
       : reports;
   }
 
-  async adjustFiles() {
+  async filesAdjustment() {
     const emails = await Promise.all(this.files.map(it => simpleParser(it.content)));
     this.files = this.files.map((it, index) => ({
       ...it,
@@ -40,9 +40,9 @@ class AttachmentsResolver {
   }
 
   async processSameFormatFiles() {
-    const latest = this.getObjectByDate(this.files, 'max').attachments;
+    const latest = this.getFileByDate(this.files, 'max').attachments;
     const sameFormatItems = this.files.filter(it => it.attachments[Object.keys(latest)[0]]);
-    const oldest = this.getObjectByDate(sameFormatItems, 'min').key;
+    const oldest = this.getFileByDate(sameFormatItems, 'min').key;
     await storage.removeFile(oldest);
     this.files = this.files.filter(it => it.key !== oldest);
   }
@@ -55,7 +55,7 @@ class AttachmentsResolver {
     }, {});
   }
 
-  getObjectByDate(items, action) {
+  getFileByDate(items, action) {
     const date = new Date(Math[action](...items.map(it => new Date(it.date))));
     return items.find(it => it.date.toISOString() === date.toISOString());
   }
