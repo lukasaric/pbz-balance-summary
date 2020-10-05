@@ -11,10 +11,7 @@ BigNumber.set({ DECIMAL_PLACES: 2 });
 
 const EXCHANGE_RATE_URL = 'http://api.hnb.hr/tecajn/v2?valuta=EUR&valuta=USD';
 
-const ERROR_MESSAGES = {
-  noContent: 'The email does not contain any attached files/reports.',
-  verification: 'File did not pass the signature verification.'
-};
+const VERIFICATION_ERROR = 'File did not pass the signature verification.';
 
 const LOCALIZED_ATTRS = {
   currencyStatement: 'valuta_izvod',
@@ -32,7 +29,6 @@ class AccBalanceResolver {
   }
 
   async inferBalance() {
-    if (!this.reports) throw new Error(ERROR_MESSAGES.noContent);
     await this.getHrkAccBalance();
     await this.getForeignCurrencyAccBalance();
     const { hrkAccBalance, foreignCurrencyAccBalance, exchangeRate } = this;
@@ -77,10 +73,9 @@ class AccBalanceResolver {
 
   sgnFileResolver(format) {
     const report = this.reports[format];
-    if (!report) return;
     const xml = isBuffer(report) ? report.toString() : readFileSync(report, 'utf-8');
     const xmlDoc = parse(xml);
-    if (!verify(xmlDoc)) throw new Error(ERROR_MESSAGES.verification);
+    if (!verify(xmlDoc)) throw new Error(VERIFICATION_ERROR);
     return xmlDoc;
   }
 
