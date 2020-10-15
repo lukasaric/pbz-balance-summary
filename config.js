@@ -16,9 +16,8 @@ module.exports = {
     region: process.env.REGION,
     recipientAddress: process.env.EMAIL_RECIPIENT_ADDRESS,
     allowedSources: [
-      process.env.ALLOWED_SOURCE,
-      'lsaric@extensionengine.com',
-      'iroglic@extensionengine.com'
+      process.env.MAIN_ALLOWED_SOURCE,
+      process.env.TEST_ALLOWED_SOURCE
     ]
   }
 };
