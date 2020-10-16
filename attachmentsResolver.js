@@ -2,13 +2,14 @@
 
 const { s3: config } = require('./config');
 const { count } = require('./utils');
+const path = require('path');
 const { simpleParser } = require('mailparser');
 const { storage } = require('./amazon');
 
 class AttachmentsResolver {
   constructor({ files, incomingKey } = {}) {
     this.files = files;
-    this.incomingKey = `${config.prefix}${incomingKey}`;
+    this.incomingKey = path.join(config.prefix, incomingKey);
   }
 
   get hasOneAttachment() {
