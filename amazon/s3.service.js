@@ -1,10 +1,10 @@
 'use strict';
 
 const { s3: config } = require('../config');
-const path = require('path');
 const S3 = require('aws-sdk/clients/s3');
 
 const API_VERSION = '2012-10-17';
+
 class Storage {
   constructor() {
     this.s3 = new S3({
@@ -21,10 +21,6 @@ class Storage {
     return { Bucket: config.bucket, Key: this.key };
   }
 
-  get prefix() {
-    return path.join(config.prefix, '/');
-  }
-
   getFile(key) {
     this.key = key;
     return this.s3.getObject(this.params).promise();
@@ -36,7 +32,7 @@ class Storage {
   }
 
   async listFiles() {
-    const params = { Bucket: config.bucket, MaxKeys: 4, Prefix: this.prefix };
+    const params = { Bucket: config.bucket, MaxKeys: 4, Prefix: config.prefix };
     const { Contents } = await this.s3.listObjectsV2(params).promise();
     const objects = await Promise.all(Contents.map(({ Key }) => this.getFile(Key)));
     return Contents.map((it, index) => ({
