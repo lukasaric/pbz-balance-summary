@@ -1,4 +1,4 @@
-# PBZ-balance-inferer
+# PBZ-balance-summary
 
 ## :page_with_curl: Dependencies
 
