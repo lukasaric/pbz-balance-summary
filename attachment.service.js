@@ -6,7 +6,7 @@ const path = require('path');
 const { simpleParser } = require('mailparser');
 const { storage } = require('./amazon');
 
-class AttachmentsResolver {
+class AttachmentService {
   constructor({ files, incomingKey } = {}) {
     this.files = files;
     this.incomingKey = path.join(config.prefix, incomingKey);
@@ -62,4 +62,4 @@ class AttachmentsResolver {
   }
 }
 
-module.exports = AttachmentsResolver;
+module.exports = AttachmentService;

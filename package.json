@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node -r dotenv/config ./handler",
-    "invoke:local": "serverless invoke local --function resolveAccBalance --path"
+    "invoke:local": "serverless invoke local --function resolveAccountBalance --path"
   },
   "author": "",
   "license": "ISC",

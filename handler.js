@@ -2,16 +2,16 @@
 
 const { isAllowedSource, isEmpty } = require('./utils');
 const { ses, storage } = require('./amazon');
-const AccBalanceResolver = require('./accBalanceResolver');
-const AttachmentsResolver = require('./attachmentsResolver');
+const AccountBalanceService = require('./account-balance.service');
+const AttachmentService = require('./attachment.service');
 
-module.exports.resolveAccBalance = async event => {
+module.exports.resolveAccountBalance = async event => {
   const mail = event.Records[0].ses.mail;
   if (!isAllowedSource(mail)) return;
   const opts = { files: await storage.listFiles(), incomingKey: mail.messageId };
-  const attachments = await new AttachmentsResolver(opts).getAttachments();
+  const attachments = await new AttachmentService(opts).getAttachments();
   if (isEmpty(attachments)) return;
-  return new AccBalanceResolver(attachments).inferBalance()
-    .then(summary => ses.forwardReport(summary))
-    .catch(err => ses.forwardError(err));
+  return new AccountBalanceService(attachments).inferBalance()
+    .then(ses.forwardReport)
+    .catch(ses.forwardError);
 };

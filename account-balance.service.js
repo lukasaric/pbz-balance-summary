@@ -20,7 +20,7 @@ const LOCALIZED_ATTRS = {
   currency: 'valuta'
 };
 
-class AccBalanceResolver {
+class AccountBalanceService {
   constructor(reports = null) {
     this.reports = reports;
     this.hrkAccBalance = 0;
@@ -95,4 +95,4 @@ class AccBalanceResolver {
   }
 }
 
-module.exports = AccBalanceResolver;
+module.exports = AccountBalanceService;
